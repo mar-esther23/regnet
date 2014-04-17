@@ -1,4 +1,4 @@
-targets, factors
-a, a
-b, b
-c, c & ! b
+targets = factors
+a = a
+b = b
+c = c & ! b
