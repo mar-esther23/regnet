@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1010.0" height="890.0" viewBox="350.0 50.0 1010.0 890.0" version="1.1">
+<rect x="350.0" y="50.0" width="1010.0" height="890.0" fill="rgb(255,255,255)"/>
+<polygon id="s1107064088" points="379.99997,90.0 540.00006,90.0 540.00006,170.0 379.99997,170.0 " fill="none"/>
+<g id="t1107064088">
+<text x="438.025" y="115.65" font-family="sans-serif" fill="rgb(0,0,0)" font-size="14.0">regNet </text>
+<text x="403.62" y="134.54999" font-family="sans-serif" fill="rgb(0,0,0)" font-size="14.0">nodes:molecules </text>
+<text x="405.615" y="153.44998" font-family="sans-serif" fill="rgb(0,0,0)" font-size="14.0">edges: functions </text>
+</g>
+<polygon id="s1107360528" points="820.0,89.999985 979.99994,89.999985 980.0,170.0 820.0,170.0 " fill="none"/>
+<g id="t1107360528">
+<text x="861.505" y="115.65" font-family="sans-serif" fill="rgb(0,0,0)" font-size="14.0">trasitionNet </text>
+<text x="832.525" y="134.54999" font-family="sans-serif" fill="rgb(0,0,0)" font-size="14.0">nodes: regNet states </text>
+<text x="830.18" y="153.44998" font-family="sans-serif" fill="rgb(0,0,0)" font-size="14.0">edges: evaluate state </text>
+</g>
+<polygon id="s1107793000" points="1160.0,79.999985 1340.0,79.999985 1340.0,180.0 1160.0,180.0 " fill="none"/>
+<g id="t1107793000">
+<text x="1225.68" y="96.75001" font-family="sans-serif" fill="rgb(0,0,0)" font-size="14.0">fateNet </text>
+<text x="1170.59" y="115.65" font-family="sans-serif" fill="rgb(0,0,0)" font-size="14.0">nodes: label of solutions </text>
+<text x="1221.48" y="134.54999" font-family="sans-serif" fill="rgb(0,0,0)" font-size="14.0">of regNet </text>
+<text x="1191.625" y="153.44998" font-family="sans-serif" fill="rgb(0,0,0)" font-size="14.0">edges: transitions </text>
+<text x="1189.875" y="172.34998" font-family="sans-serif" fill="rgb(0,0,0)" font-size="14.0">between attractors </text>
+</g>
+<ellipse id="s1107797856" cx="460.0" cy="240.0" rx="20.0" ry="20.0" fill="rgb(42,0,51)" stroke-width="2.0" stroke="rgb(0,0,0)"/>
+<g id="t1107797856">
+<text x="460.25" y="244.55" font-family="sans-serif" fill="rgb(0,0,0)" font-size="14.0"> </text>
+</g>
+<rect id="s1108414968" x="380.0" y="309.99994" width="160.00003" height="80.0" fill="none" stroke-width="2.0" stroke="rgb(0,0,0)" rx="16.0" ry="16.0"/>
+<g id="t1108414968">
+<text x="398.125" y="345.09995" font-family="sans-serif" fill="rgb(0,0,0)" font-size="14.0">generate functions </text>
+<text x="387.625" y="363.99994" font-family="sans-serif" fill="rgb(0,0,0)" font-size="14.0">lambda or logic tables </text>
+</g>
+<polygon id="s1109013152" points="850.0,320.0 950.0,320.0 950.0,380.0 850.0,380.0 " fill="none" stroke-width="2.0" stroke="rgb(0,0,0)"/>
+<g id="t1109013152">
+<text x="857.41003" y="354.55" font-family="sans-serif" fill="rgb(0,0,0)" font-size="14.0">transitionNet </text>
+</g>
+<polygon id="s1107508312" points="820.0,510.0 979.9998,510.0 980.0,570.0 820.0,570.0 " fill="none" stroke-width="2.0" stroke="rgb(0,0,0)"/>
+<g id="t1107508312">
+<text x="867.945" y="525.64996" font-family="sans-serif" fill="rgb(0,0,0)" font-size="14.0">attractors </text>
+<text x="837.075" y="544.55" font-family="sans-serif" fill="rgb(0,0,0)" font-size="14.0">{label : [sum_basin, </text>
+<text x="862.31" y="563.45" font-family="sans-serif" fill="rgb(0,0,0)" font-size="14.0">{sol:basin}]} </text>
+</g>
+<rect id="s1107795856" x="1190.0" y="509.99994" width="120.0" height="60.0" fill="none" stroke-width="2.0" stroke="rgb(0,0,0)" rx="12.0" ry="12.0"/>
+<g id="t1107795856">
+<text x="1201.25" y="535.0999" font-family="sans-serif" fill="rgb(0,0,0)" font-size="14.0">labels -&gt; nodes </text>
+<text x="1209.79" y="553.99994" font-family="sans-serif" fill="rgb(0,0,0)" font-size="14.0">basin -&gt; size </text>
+</g>
+<rect id="s1108482984" x="1200.0" y="639.9999" width="100.0" height="60.0" fill="none" stroke-width="2.0" stroke="rgb(0,0,0)" rx="12.0" ry="12.0"/>
+<g id="t1108482984">
+<text x="1220.885" y="665.09985" font-family="sans-serif" fill="rgb(0,0,0)" font-size="14.0">generate </text>
+<text x="1232.12" y="683.9999" font-family="sans-serif" fill="rgb(0,0,0)" font-size="14.0">edges </text>
+</g>
+<polygon id="s1107813128" points="820.0,670.0001 900.0,710.0 980.0,670.0001 900.0,630.0 " fill="none" stroke-width="2.0" stroke="rgb(0,0,0)"/>
+<g id="t1107813128">
+<text x="867.49" y="655.64996" font-family="sans-serif" fill="rgb(0,0,0)" font-size="14.0">state final </text>
+<text x="875.785" y="674.55" font-family="sans-serif" fill="rgb(0,0,0)" font-size="14.0">solution </text>
+<text x="879.775" y="693.45" font-family="sans-serif" fill="rgb(0,0,0)" font-size="14.0">found? </text>
+</g>
+<rect id="s1107579592" x="400.0" y="639.9999" width="120.0" height="60.0" fill="none" stroke-width="2.0" stroke="rgb(0,0,0)" rx="12.0" ry="12.0"/>
+<g id="t1107579592">
+<text x="410.27002" y="665.09985" font-family="sans-serif" fill="rgb(0,0,0)" font-size="14.0">stateTransition </text>
+<text x="405.86" y="683.9999" font-family="sans-serif" fill="rgb(0,0,0)" font-size="14.0">+ cycle detection </text>
+</g>
+<polygon id="s1108534528" points="840.0,770.0 960.0,770.0 960.0,850.0 840.0,850.0 " fill="none" stroke-width="2.0" stroke="rgb(0,0,0)"/>
+<g id="t1108534528">
+<text x="851.67" y="795.64996" font-family="sans-serif" fill="rgb(0,0,0)" font-size="14.0">initial attractor </text>
+<text x="859.755" y="814.55" font-family="sans-serif" fill="rgb(0,0,0)" font-size="14.0">perturbation </text>
+<text x="855.31" y="833.45" font-family="sans-serif" fill="rgb(0,0,0)" font-size="14.0">final attractor </text>
+</g>
+<polygon id="s1108519216" points="1200.0,859.9999 1300.0,859.9999 1300.0,919.9999 1200.0,919.9999 " fill="none" stroke-width="2.0" stroke="rgb(0,0,0)"/>
+<g id="t1108519216">
+<text x="1225.68" y="894.54987" font-family="sans-serif" fill="rgb(0,0,0)" font-size="14.0">fateNet </text>
+</g>
+<g id="la1108489472">
+<path id="s1108489472" d="M 460.0,260.0 459.99997,309.99994 " fill="none" stroke-width="2.0" stroke="rgb(0,0,0)"/>
+</g>
+<g id="t1108489472">
+<text x="460.25" y="284.99997" font-family="sans-serif" fill="rgb(0,0,0)" font-size="14.0"> </text>
+</g>
+<g id="la1107777792">
+<path id="s1107777792" d="M 539.9999,329.99994 850.0,330.0 " fill="none" stroke-width="2.0" stroke="rgb(0,0,0)"/>
+<polygon id="s1107496016" points="850.0,330.0 840.78937,333.8942 845.0,330.0 840.78937,326.1058 " fill="rgb(0,0,0)" stroke-width="1.0" stroke="rgb(0,0,0)"/>
+</g>
+<g id="t1107777792">
+<text x="605.1599" y="320.54996" font-family="sans-serif" fill="rgb(0,0,0)" font-size="14.0">getSolutions() -&gt; fragments </text>
+</g>
+<g id="la1108229624">
+<path id="s1108229624" d="M 539.99994,359.99994 850.0,360.0 " fill="none" stroke-width="2.0" stroke="rgb(0,0,0)"/>
+<polygon id="s1107399216" points="850.0,360.0 840.78937,363.8942 845.0,360.0 840.78937,356.1058 " fill="rgb(0,0,0)" stroke-width="1.0" stroke="rgb(0,0,0)"/>
+</g>
+<g id="t1108229624">
+<text x="589.235" y="350.54996" font-family="sans-serif" fill="rgb(0,0,0)" font-size="14.0">getTransitionNet() -&gt; exhaustive </text>
+</g>
+<g id="la1108155280">
+<path id="s1108155280" d="M 900.0,380.0 900.0,510.0 " fill="none" stroke-width="2.0" stroke="rgb(0,0,0)"/>
+<polygon id="s1107361800" points="900.0,510.0 896.10583,500.7894 900.0,505.0 903.89417,500.7894 " fill="rgb(0,0,0)" stroke-width="1.0" stroke="rgb(0,0,0)"/>
+</g>
+<g id="t1108155280">
+<text x="851.32" y="445.0" font-family="sans-serif" fill="rgb(0,0,0)" font-size="14.0">getAttractors()</text>
+</g>
+<g id="la1107124224">
+<path id="s1107124224" d="M 979.99994,540.0 1190.0,539.99994 " fill="none" stroke-width="2.0" stroke="rgb(0,0,0)"/>
+<polygon id="s1107360104" points="1190.0,539.99994 1180.7894,543.8941 1185.0,539.99994 1180.7894,536.1058 " fill="rgb(0,0,0)" stroke-width="1.0" stroke="rgb(0,0,0)"/>
+</g>
+<g id="t1107124224">
+<text x="1085.25" y="530.55" font-family="sans-serif" fill="rgb(0,0,0)" font-size="14.0"> </text>
+</g>
+<g id="la1108304160">
+<path id="s1108304160" d="M 1250.0,569.99994 1250.0,639.9999 " fill="none" stroke-width="2.0" stroke="rgb(0,0,0)"/>
+<polygon id="s1107323168" points="1250.0,639.9999 1246.1058,630.78925 1250.0,634.9999 1253.8942,630.78925 " fill="rgb(0,0,0)" stroke-width="1.0" stroke="rgb(0,0,0)"/>
+</g>
+<g id="t1108304160">
+<text x="1250.25" y="604.9999" font-family="sans-serif" fill="rgb(0,0,0)" font-size="14.0"> </text>
+</g>
+<g id="la1109366400">
+<path id="s1109366400" d="M 1200.0,669.9999 980.0,670.0001 " fill="none" stroke-width="2.0" stroke="rgb(0,0,0)"/>
+<polygon id="s1107121488" points="980.0,670.0001 989.21063,666.10596 985.0,670.0001 989.21063,673.8943 " fill="rgb(0,0,0)" stroke-width="1.0" stroke="rgb(0,0,0)"/>
+</g>
+<g id="t1109366400">
+<text x="1043.665" y="660.55" font-family="sans-serif" fill="rgb(0,0,0)" font-size="14.0">perturbState() </text>
+</g>
+<g id="la1109399096">
+<path id="s1109399096" d="M 820.0,670.0001 519.99994,669.9999 " fill="none" stroke-width="2.0" stroke="rgb(0,0,0)"/>
+<polygon id="s1107023776" points="519.99994,669.9999 529.2106,666.1057 524.99994,669.9999 529.2106,673.89404 " fill="rgb(0,0,0)" stroke-width="1.0" stroke="rgb(0,0,0)"/>
+</g>
+<g id="t1109399096">
+<text x="662.305" y="660.55" font-family="sans-serif" fill="rgb(0,0,0)" font-size="14.0">no </text>
+</g>
+<g id="la1107400424">
+<path id="s1107400424" d="M 900.0,710.0 900.0,770.0 " fill="none" stroke-width="2.0" stroke="rgb(0,0,0)"/>
+<polygon id="s1106975752" points="900.0,770.0 896.10583,760.78937 900.0,765.0 903.89417,760.78937 " fill="rgb(0,0,0)" stroke-width="1.0" stroke="rgb(0,0,0)"/>
+</g>
+<g id="t1107400424">
+<text x="850.865" y="740.0" font-family="sans-serif" fill="rgb(0,0,0)" font-size="14.0">nx.successor()</text>
+</g>
+<g id="la1107574048">
+<path id="s1107574048" d="M 960.0,800.0 1210.0,699.9999 " fill="none" stroke-width="2.0" stroke="rgb(0,0,0)"/>
+<polygon id="s1106932224" points="1210.0,699.9999 1202.8944,707.03625 1205.3577,701.8568 1200.002,699.80493 " fill="rgb(0,0,0)" stroke-width="1.0" stroke="rgb(0,0,0)"/>
+</g>
+<g id="t1107574048">
+<text x="1051.09" y="740.5499" font-family="sans-serif" fill="rgb(0,0,0)" font-size="14.0">addEdge() </text>
+</g>
+<g id="la1108363144">
+<path id="s1108363144" d="M 1250.0,699.9999 1250.0,859.9999 " fill="none" stroke-width="2.0" stroke="rgb(0,0,0)"/>
+<polygon id="s1106541704" points="1250.0,859.9999 1246.1058,850.78925 1250.0,854.9999 1253.8942,850.78925 " fill="rgb(0,0,0)" stroke-width="1.0" stroke="rgb(0,0,0)"/>
+</g>
+<g id="t1108363144">
+<text x="1250.25" y="779.9999" font-family="sans-serif" fill="rgb(0,0,0)" font-size="14.0"> </text>
+</g>
+<g id="la1109375224">
+<path id="s1109375224" d="M 520.0,699.9999 840.0,790.0 " fill="none" stroke-width="2.0" stroke="rgb(0,0,0)"/>
+<polygon id="s1106357120" points="840.0,790.0 830.07904,791.255 835.18677,788.6463 832.18774,783.7575 " fill="rgb(0,0,0)" stroke-width="1.0" stroke="rgb(0,0,0)"/>
+</g>
+<g id="t1109375224">
+<text x="624.88" y="735.5499" font-family="sans-serif" fill="rgb(0,0,0)" font-size="14.0">stateTransition() </text>
+</g>
+</svg>
