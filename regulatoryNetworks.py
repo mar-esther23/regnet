@@ -2,11 +2,13 @@ from random import shuffle, randint
 import matplotlib.pyplot as plt
 #from itertools import zip
 import networkx as nx
+import numpy as np
 import re
 
 class regNet(object):
     def __init__(self,data,f_type="lambda_bool", threshold=None):
         #TODO change "f_text" for "data" and add capability to accept matrix or tabtext
+        #TODO receive node names?
         
         #The main structure is a networkx directed graph        
         self.graph = nx.DiGraph() #networkx graph (dictionary)
@@ -40,6 +42,7 @@ class regNet(object):
             self.functions = tuple(self.functions)
             
             #declare networkx graph
+            #TODO make this a separate function that depends only of data
             for n,f in zip(self.nodes, self.f_text):
                 f=f.replace('and','').replace('or','').replace('not','')
                 f = f.split() #list of regulators
@@ -48,14 +51,37 @@ class regNet(object):
             #declare adjacency matrix 
             #TODO declare weight_matrix
             self.weight_matrix = nx.to_numpy_matrix(self.graph, nodelist=self.nodes)
-            print type(self.weight_matrix)
-            print self.weight_matrix
+            
     
     
         elif self.f_type == "weight_matrix":
             #receives a weight matrix and a threshold
-            print type(data)
-            print data
+            #the first line of the array is the ordered name of the nodes
+            #the rest is a square matrix with weight numbers
+            
+            self.functions = []
+            self.f_text = []
+            
+            #declare nodes, matrix and f_text
+            self.nodes = tuple(data[0])
+            self.weight_matrix =  np.asmatrix(data[1::])
+            for i in range(len(self.weight_matrix)): #things are printed as a tuple
+                self.f_text.append(str(   tuple(map(int,self.weight_matrix[:,i]))   ))
+            self.f_text = tuple(self.f_text)
+            
+            #declare networkx graph
+            #TODO make this a function that depends only from data
+            nodes = data[0] #node names
+            data = zip(*data[1::]) #transpose weight matrix to make things easy  
+            for n, reg in zip(nodes, data):
+                #if weight is != 0 the node is a regulator
+                reg = [n2 for n2,r in zip(nodes,reg) if r!=0 ]
+                for r in reg: self.graph.add_edge(r,n) #declare edges
+            
+            #declare lambda functionsText
+            for f in self.f_text:
+                self.functions.append(eval('lambda state, threshold: [1 if x*y>threshold else 0 for x,y in zip(state,' + f + ' )]')) #eval to declare as f()
+            self.functions = tuple(self.functions)
     
         else: print "Incorrect function type"
     
@@ -74,6 +100,12 @@ class regNet(object):
             #for i in eval_order: #eval with lambda functions
                 #state[i] = float(self.functions[i](state))
             #return state
+            
+            ##What we will do is multiply vectors
+            ##c=[i*j for i,j in zip(a,b)]
+            ##And evaluate threshold
+            ##d = [1 if x>0 else 0 for x in c]
+            ##Minimal boolean version: c=[1 if i*j>t else 0 for i,j in zip(a,b)]
             
     #def getTransitionGraph(self, method="sync", initial_states=0, iter_steps=1):
         ##takes the boolean network
@@ -145,8 +177,19 @@ class regNet(object):
             #text += '%s = %s\n' % (i, j)
         #return text.strip()
         
-    ##def boolnet2regnet(): #TODO including where
-        ##pass
+def boolnet2regnet(): #TODO including where
+    pass
+
+def tab2array(text): #receives text in tabular format and converts it to array
+    #first line is ordered node names
+    #the rest is the weight between interactions
+    text = text.strip().split('\n')
+    matrix = []
+    for t in text:
+        try: matrix.append(  map(int, t.strip().split())  )
+        except: matrix.append( t.strip().split() )
+    #for m in matrix: print m
+    return matrix
 
 #Main
 text_functions = """
@@ -161,9 +204,10 @@ text_matrix = """
     0\t-1\t1
     """
 
-example_functions = regNet(text_functions)
+#example_functions = regNet(text_functions)
 
-example_matrix = regNet(text_matrix,"weight_matrix")
+matrix = tab2array(text_matrix)
+example_matrix = regNet(matrix,"weight_matrix")
 
 #example.getSteadyStates()
 #print example.attractors
