@@ -1,0 +1,14 @@
+# Example network
+#  State     Next  Basin  TransToAttr
+#  000 =>    000     1       0
+#  100 =>    110     2       1
+#  010 =>    000     1       1
+#  110 =>    110     2       0
+#  001 =>    001     3       0
+#  101 =>    101     4       0
+#  011 =>    000     1       1
+#  111 =>    100     2       2
+targets, factors
+a, a
+b, a & ! c
+c, c & ! b
