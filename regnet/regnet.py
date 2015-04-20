@@ -7,33 +7,32 @@ from node import Node
 
 class RegNet(object):
     """
-    Base class for a regulatory network.
+    A network of nodes with associated regulatory functions. The edges are defined by which nodes regulate the value of a certain node.
 
-    A network stores nodes with its associated functions. The edges are defined by which nodes regulate the value of a certain node.
+    Attributes
+    ----------  
+    f_type (str):   type of function in the graph, can be:
+        "lambda_bool": lambda boolean function, evaluate state in function, returns 0 or 1
+        "matrix_bool": interaction matrix, multiply state per node vector, evaluate by threshold, returns 0 or 1
+        "table_bool":  transition table, search state of neighbors in table, returns 0 or 1
+        "lambda_discrete": lambda discrete function, evaluate state in function, returns a positive integer
+    nodes (list of Node(s)):    node objects, nodes have a name, index and function
+    graph (networkx DiGraph):   networkx directed graph, edges are defined by which nodes regulate the value of a certain node
+    threshold (int, optional): threshold to evaluate network
+    adj_matrix (numpy matrix, optional): adjacency matrix
+    verbose (Bool, optional)
     """
 
     def __init__(self,data,f_type="lambda_bool", threshold=1, verbose=True):
         """Initialize a node. A node must have a name, index, function type, and a function; regulators and attributes are optional.
 
-        Parameters
-        ----------
-        data : input graph
-            Data to initialize network.  If data=None (default) an empty network is generated.  
-        f_type :  string, type of function in the graph, can be:
-            lambda_bool:	(default) lambda boolean function, evaluate state in function, returns 0 or 1
-            matrix_bool:	interaction matrix, evaluate multiplying state (row) * matrix (column), then apply threshold, returns 0 or 1. See Networks: An Introduction, Mark Newman (2010)
-                    1st line: name of the nodes
-                    a_ij    : weight of the interaction j -> i 
-                    threshold : threshold to round value
-            table_bool:		transition table, search state of neighbors in table, returns 0 or 1
-            lambda_discrete: lambda discrete function, evaluate state in function, returns a positive integer
-        verbose:  print messages
-
-        See Also
-        --------
-        
-        Examples
-        --------
+        Arguments
+        ---------
+        data :          data to initialize network.  If data=None (default) an empty network is generated.  
+        f_type (str):   type of function in the graph
+        threshold (int, optional), threshold to evaluate network
+        adj_matrix (numpy matrix, optional): adjacency matrix
+        verbose (Bool, optional)
         """
         
         #The main structure is a networkx directed graph        
@@ -51,11 +50,11 @@ class RegNet(object):
             #AAAAAAAAAAAAAAAAAAARRRRRRRRRRRRRRRRRRGGGGGGGGGGGGGGGG
             raise NotImplementedError
             # #data: adyacency matrix with node names + weights
-            # self.interaction = np.array(data[1:])
-            # if len(self.interaction) != len(self.interaction): print "Error: non-square matrix" #check that matrix is square
+            # self.adj_matrix = np.array(data[1:])
+            # if len(self.adj_matrix) != len(self.adj_matrix): print "Error: non-square matrix" #check that matrix is square
             # self.threshold = threshold
-            # self.nodes = self.generate_node_matrix_bool(data[0], self.interaction, threshold)
-            # self.graph = self.interaction_matrix_to_digraph(data[0], self.interaction)
+            # self.nodes = self.generate_node_matrix_bool(data[0], self.adj_matrix, threshold)
+            # self.graph = self.adj_matrix_to_digraph(data[0], self.adj_matrix)
 
         if self.f_type == "table_bool":
             #data: [[ node_name, [regulators], [boolean table] ], ... ]
@@ -68,9 +67,7 @@ class RegNet(object):
             
 
     def __str__(self): 
-        """
-        Print network type and nodes (with rules)
-        """
+        """Print network type and nodes (with rules) """
         text = self.f_type + ":\n"
         for node in self.nodes:
             text += str(node) + '\n'
@@ -112,25 +109,18 @@ class RegNet(object):
 
     def generate_node_lambda_bool(self, data):
         """
-        Declare nodes with function from a multiline string of boolean functions
+        Declare nodes with function from a multiline string of boolean functions.
 
-        Parameters
-        ----------
+        Arguments
+        ---------
         data:  string, in format: node = regulatory function
                each node in newline
                nodes are declared in order of aparition
                functions are lambda functions which return 0 or 1
 
-        Return
-        ------
-        List of Node (view class Node)
-
-        See Also
-        --------
-        
-        Examples
-        --------
-
+        Returns
+        -------
+        List of Node(s) (view class Node)
         """
 
         nodes = []
@@ -171,40 +161,40 @@ class RegNet(object):
 
     
 
-    def generate_node_matrix_bool(self, names, interact, threshold):
+    def generate_node_matrix_bool(self, names, matrix, threshold):
         """
         Declare nodes whose state is given by an interaction matrix
             S[i](t+1) = { 1 if \sum_j S_j(t) * a_ij >= threshold
                           0 otherwise
 
-        Parameters
-        ----------
+        Arguments
+        ---------
         names    :  list with ordered name of nodes
-        interact :  numpy interaction matrix
+        matrix :  numpy interaction matrix
         threshold:  int (default 1), used to evaluate if node is 1 or 0
 
-        Return
-        ------
-        List of Node (view class Node)
+        Returns
+        ------.
+        List of Node(s) (view class Node)
 
         """
 
         nodes = []
-        if len(interact) != len(interact[0]): 
+        if len(matrix) != len(matrix[0]): 
             raise TypeError("Incorrect interaction matrix")
 
         #transpose interactions to make things easier
         #now a_ij in interaction i->j
-        interact = np.transpose(interact)
+        matrix = np.transpose(matrix)
 
         #nodes(self, name, f_type, index, function=None, str_function="", regulators=None):
         for i in range(len(names)):
             node_name = names[i]
-            node_str_function = '[' + ','.join([str(j) for j in interact[i]]) + ']'
+            node_str_function = '[' + ','.join([str(j) for j in matrix[i]]) + ']'
             #declare lambda function
             node_lambda = eval("lambda state: 1 if np.dot( state , "+ node_str_function + ") >= " +str(threshold) +" else 0" )
             #determine regulators
-            regulators = [x for x,y in zip(names, interact[i]) if y != 0]
+            regulators = [x for x,y in zip(names, matrix[i]) if y != 0]
             #declare node
             nodes.append(   Node(names[i], self.f_type, i, node_lambda,
                 node_str_function, regulators))
@@ -217,14 +207,13 @@ class RegNet(object):
         """
         Declare nodes where the function is represented as a table. The next state is a position in the table that depends on ints regulators
 
-
-        Parameters
-        ----------
+        Arguments
+        ---------
         data:  array, where [  [name, [regulators], [table]]  , ... ]
 
-        Return
-        ------
-        List of Node (view class Node)
+        Returns
+        -------
+        List of Node(s) (view class Node)
 
         Examples
         --------
@@ -287,8 +276,7 @@ class RegNet(object):
 
     def interaction_matrix_to_digraph(self, names, adyacency):
         """
-        Declare a networkx directed graph with node names from adyacency matrix with names
-        a_ij is the effect of node j -> i
+        Declare a networkx directed graph with node names from adyacency matrix. a_ij is the effect of node j -> i
         """
         G = nx.DiGraph()
         for i in range(len(adyacency)):

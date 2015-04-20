@@ -1,4 +1,4 @@
-from random import shuffle
+from random import shuffle,  choice
 
 from regnet import RegNet
 from node import Node
@@ -6,20 +6,20 @@ from node import Node
 
 def state_transition(state, net, method="sync", nodes="all"):
     """
-    Calculate S(t+1) from S(t)
+    Calculate state in t+1 from state in t.
 
-    Parameters
-    ----------
-    state : state of all nodes in t
-    net   : regulatory network
-    method: type of evaluation
-                "sync"   (default) all nodes at the same time
-                "async"  nodes are evaluated one by one
-    nodes :  node(s) to evaluate
-                "all"    (default) evaluate all nodes in declared order
-                "random" evaluate all nodes in random order
-                [list]   evaluate only the nodes in the list in that order
-                node     evaluate only this node, receives node name
+    Arguments
+    ---------
+    state (list):   state of all nodes in t
+    net (regnet):   regulatory network
+    method (str):   type of evaluation
+        "sync"   (default) all nodes at the same time
+        "async"  nodes are evaluated one by one
+    nodes (*):      node(s) to evaluate
+        "all"    (default) evaluate all nodes in declared order
+        "random" evaluate all nodes in random order
+        [list]   evaluate only the nodes in the list in that order
+        node     evaluate only this node, receives node name
 
     Returns
     -------
@@ -29,9 +29,7 @@ def state_transition(state, net, method="sync", nodes="all"):
     if not isinstance(net, RegNet): raise TypeError("Invalid network")
     if len(state) != len(net): raise TypeError("Invalid state")
 
-
     #determine order on nodes to update
-
     if nodes == "all": 
         nodes = [n.name for n in net]
     elif nodes == "random":
@@ -58,3 +56,44 @@ def state_transition(state, net, method="sync", nodes="all"):
             new_state[ net[n].index ] =  net[n].function(new_state)
         return new_state
 
+
+def get_trajectory(state, network, method="sync", time=None):
+    """
+    Evaluates network until an attractor is reached or for a certain number of updates.
+
+    Arguments
+    ---------
+
+    state (list) :      initial state of trajectory
+    network (regnet):   network to evaluate
+    method (str):       updating method of nodes
+        "sync" :    synchronous updating of all N nodes simultaneously
+        "async":    for each update a node was selected at random and updated
+        "async-all": the N nodes were updated in a randomly ordered sequence, before each sequence a new random ordering of the nodes is made
+    time (int | None) : number of updates, if None the network is updated until an attractor is found
+
+    Returns
+    -------
+    Trajectory (list):  list of states beginning form original state
+    """
+
+    trajectory = [state]
+    while time > 0 or time == None:
+        if method == "sync":
+            state = state_transition(state, network, "sync", "all")
+        if method == "async":
+            state = state_transition(state, network, "async", choice(network.node_list()) )
+        if method == "async-all":
+            state = state_transition(state, network, "async", "random" )
+        trajectory.append(state)
+        # verify if attractor
+        if time == None:
+            if state in trajectory[:-1]: 
+                return trajectory
+        else: time = time - 1
+    return trajectory
+
+
+
+def get_attractors(network, method="sync", nodes="all"):
+    pass
