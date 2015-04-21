@@ -16,6 +16,7 @@ class RegNet(object):
         "matrix_bool": interaction matrix, multiply state per node vector, evaluate by threshold, returns 0 or 1
         "table_bool":  transition table, search state of neighbors in table, returns 0 or 1
         "lambda_discrete": lambda discrete function, evaluate state in function, returns a positive integer
+    f_base (int, list):         number of values the nodes can take, if boolean it is 2. If discrete it is max_value + 1. If the nodes have different values the list determines the max value of each node.
     nodes (list of Node(s)):    node objects, nodes have a name, index and function
     graph (networkx DiGraph):   networkx directed graph, edges are defined by which nodes regulate the value of a certain node
     threshold (int, optional): threshold to evaluate network
@@ -23,7 +24,7 @@ class RegNet(object):
     verbose (Bool, optional)
     """
 
-    def __init__(self,data,f_type="lambda_bool", threshold=1, verbose=True):
+    def __init__(self,data,f_type="lambda_bool", f_base=2, threshold=1, verbose=True):
         """Initialize a node. A node must have a name, index, function type, and a function; regulators and attributes are optional.
 
         Arguments
@@ -40,6 +41,8 @@ class RegNet(object):
         self.graph = nx.DiGraph() #networkx graph (dictionary)
         self.nodes = [] #list of node objects, nodes have a name, index and function
         self.verbose = verbose
+        if f_base != 2: raise NotImplementedError
+        else: self.f_base = f_base
     
         if self.f_type == "lambda_bool": 
             #data: multiline string with boolean functions

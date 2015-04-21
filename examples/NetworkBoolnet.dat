@@ -1,5 +1,6 @@
 targets, factors
 # Example network
+#  Synchronous
 #  State     Next  Basin  TransToAttr
 #  000 =>    000     1       0
 #  001 =>    001     3       0
@@ -9,6 +10,17 @@ targets, factors
 #  101 =>    101     4       0
 #  110 =>    110     2       0
 #  111 =>    100     2       2
+#  Aynchronous
+#  State     Next
+#  000 =>    000
+#  001 =>    001
+#  010 =>    000
+#  011 =>    000 | 001
+#  100 =>    110
+#  101 =>    101
+#  110 =>    110
+#  111 =>    110 | 101
+
 a, a
 b, a & ! c
 c, c & ! b
