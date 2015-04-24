@@ -5,7 +5,7 @@ from regnet import RegNet
 from node import Node
 
 
-def state_transition(state, net, method="sync", nodes="all"):
+def state_transition(state, net, update="sync", nodes="all"):
     """
     Calculate state in t+1 from state in t.
 
@@ -13,7 +13,7 @@ def state_transition(state, net, method="sync", nodes="all"):
     ---------
     state (list):   state of all nodes in t
     net (regnet):   regulatory network
-    method (str):   type of evaluation
+    update (str):   type of evaluation
         "sync"   (default) all nodes at the same time
         "async"  nodes are evaluated one by one
     nodes (*):      node(s) to evaluate
@@ -43,14 +43,14 @@ def state_transition(state, net, method="sync", nodes="all"):
     else: raise TypeError("Invalid node list")
 
     #evaluate nodes
-    if method == "sync":
+    if update == "sync":
         new_state = list(state)
         for n in nodes:
             #actualize new state using old as base
             new_state[ net[n].index ] =  net[n].function(state)
         return new_state
 
-    if method == "async":
+    if update == "async":
         new_state = list(state)
         for n in nodes:
             #actualize new state using last updated new_state of list in order
@@ -58,7 +58,7 @@ def state_transition(state, net, method="sync", nodes="all"):
         return new_state
 
 
-def get_trajectory(state, network, method="sync", time=None):
+def get_trajectory(state, network, update="sync", time=None):
     """
     Evaluates network until an attractor is reached or for a certain number of updates.
 
@@ -67,7 +67,7 @@ def get_trajectory(state, network, method="sync", time=None):
 
     state (list) :      initial state of trajectory
     network (regnet):   network to evaluate
-    method (str):       updating method of nodes
+    update (str):       updating update of nodes
         "sync" :    synchronous updating of all N nodes simultaneously
         "async":    for each update a node was selected at random and updated
         "async-all": the N nodes were updated in a randomly ordered sequence, before each sequence a new random ordering of the nodes is made
@@ -80,11 +80,11 @@ def get_trajectory(state, network, method="sync", time=None):
 
     trajectory = [state]
     while time > 0 or time == None:
-        if method == "sync":
+        if update == "sync":
             state = state_transition(state, network, "sync", "all")
-        if method == "async":
+        if update == "async":
             state = state_transition(state, network, "async", choice(network.node_list()) )
-        if method == "async-all":
+        if update == "async-all":
             state = state_transition(state, network, "async", "random" )
         trajectory.append(state)
         # verify if attractor
@@ -95,28 +95,27 @@ def get_trajectory(state, network, method="sync", time=None):
     return trajectory
 
 
-def get_transition_graph(network, method="sync", states="all", G=None):
+def get_transition_graph(network, update="sync", states="all"):
     """
     Obtain transition graph of the network. Only works for Boolean or discrete integer networks.
 
     Arguments
     ---------
     network (regnet):   network to evaluate.
-    method (str):       updating method of nodes.
+    update (str):       updating update of nodes.
         "sync" :    synchronous updating of all N nodes simultaneously
         "async":    for each update a node was selected at random and updated
     states: initial states to try
         "all":  all initial states will be used
         int :   n random initial states will be used
         list:   the initial states in the list will be used
-    G (nx.Digraph):     previous transition graph.
 
     Returns
     -------
     G (nx.DiGraph): transition graph of the network.
     """
     # Initialize graph
-    if G == None: G = nx.DiGraph()
+    G = nx.DiGraph(update=update, states=states)
 
     #generate states to evaluate
     if states == "all": #generator of all possible states
@@ -129,45 +128,68 @@ def get_transition_graph(network, method="sync", states="all", G=None):
 
     #Evaluate states
     for s in states:
-        if method == "sync":
+        if update == "sync":
             new = state_transition(s, network, "sync", "all")
             G.add_edge( array_to_str(s), array_to_str(new) )  #save str to graph
-        if method == "async":
+        if update == "async":
             news = {}
             s_str = array_to_str(s)
             for n in network: #evaluate each node
                 new = array_to_str( state_transition(s, network, "async", n.name) )
                 if new in news: news[new] += 1
                 else: news[new] = 1
-            if news[s_str] != len(network): del news[s_str] # remove false self-loops
+            if s_str in news and news[s_str] != len(network): 
+                del news[s_str] # remove false self-loops
             for n in news: G.add_edge( s_str, array_to_str(n), weight=news[n] )  #save str to graph
     return G
 
 
-def get_attractors(network, method="sync", states="all"):
+def get_attractors(network, method="graph", update="sync", states="all", graph=None):
     """
     An attractor is a solution of the network such that state(t) = state(t+n).
 
     Arguments
     ---------
     network (regnet):   network to evaluate.
-    method (str):       updating method of nodes.
-        "sync" :    synchronous updating of all N nodes simultaneously
-        "async":    for each update a node was selected at random and updated
-    states:     initial states to try
-        "all":  all initial states will be used
-        int :   n random initial states will be used
-        list:   the initial states in the list will be used
+    method (str):   structure to analyze
+        "graph": create a transition graph and analyze it, returns attraction basins.
+        "trajectory": obtain attractors from trajectories.
+    update (str):   updating update of nodes.
+        "sync" : synchronous updating of all N nodes simultaneously
+        "async": for each update a node was selected at random and updated
+    states (str):   initial states to try
+        "all":   all initial states will be used
+        int :    n random initial states will be used
+        list:    the initial states in the list will be used
+    graph (networkx DiGraph, optional): transition graph to analyze.
 
     Returns
     -------
     attrs (list of attractors): list of attractors of the network
     """
 
-    if len(network > 25) and initial_states == "all":
-        print "The network has more than 25 nodes, calculating the attractors may take a long time. Consider using a number of random initial states."
+    if len(network) > 25 and initial_states == "all":
+        print "The network has more than 25 nodes. Consider using random."
 
-    pass
+    if method == "graph": 
+        if isinstance( graph, nx.DiGraph ): 
+            if graph.graph['update'] != update or graph.graph['state'] != state: #check if same update and method
+                print "Received graph and get_attractors() have different arguments."
+        else: graph = get_transition_graph(network, update, states) #create new graph
+
+        if graph.graph['update'] == "sync": #return all cycles ordered with attr basin
+            # print network
+            # print sorted( graph.edges() )
+            # print list( nx.simple_cycles(graph) )
+            pass
+
+        if graph.graph['update'] == "async": #return all closed cycles ordered with attr basin
+            print list( nx.simple_cycles(graph) )
+            pass
+
+
+
+
 
 
 

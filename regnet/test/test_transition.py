@@ -16,31 +16,37 @@ class TestSequenceFunctions(unittest.TestCase):
             c = c and not b
             """
         self.network = RegNet(text_functions, "lambda_bool", verbose=False)
+        cycle_functions = """
+            a = b
+            b = a and not c
+            c = b
+            """
+        self.net_cycle = RegNet(cycle_functions, "lambda_bool", verbose=False)
         self.states = [[int(i) for i in bin(j)[2:].zfill(3)] for j in range(8)]
         
 
     # def test_lambda_bool_all_sync(self):
     #     sol_all_sync = [[0,0,0], [0,0,1], [0,0,0], [0,0,0], [1,1,0], [1,0,1], [1,1,0], [1,0,0] ]
     #     for s, sol in zip(self.states, sol_all_sync):
-    #         self.assertEqual( transition.state_transition(s, self.network, method="sync", nodes='all') , sol )
+    #         self.assertEqual( transition.state_transition(s, self.network, update="sync", nodes='all') , sol )
 
 
     # def test_lambda_bool_random_sync(self):
     #     sol_all_sync = [[0,0,0], [0,0,1], [0,0,0], [0,0,0], [1,1,0], [1,0,1], [1,1,0], [1,0,0] ]
     #     for s, sol in zip(self.states, sol_all_sync):
-    #         self.assertEqual( transition.state_transition(s, self.network, method="sync", nodes='random') , sol )
+    #         self.assertEqual( transition.state_transition(s, self.network, update="sync", nodes='random') , sol )
 
 
     # def test_lambda_bool_list_sync(self):
     #     sol_list_sync = [[0,0,0], [0,0,1], [0,1,0], [0,1,0], [1,0,0], [1,0,1], [1,1,0], [1,1,0] ]
     #     for s, sol in zip(self.states, sol_list_sync):
-    #         self.assertEqual( transition.state_transition(s, self.network, method="sync", nodes=['a','c']) , sol )
+    #         self.assertEqual( transition.state_transition(s, self.network, update="sync", nodes=['a','c']) , sol )
 
 
     # def test_lambda_bool_node_sync(self):
     #     sol_node_sync = [[0,0,0], [0,0,1], [0,0,0], [0,0,1], [1,1,0], [1,0,1], [1,1,0], [1,0,1] ]
     #     for s, sol in zip(self.states, sol_node_sync):
-    #         self.assertEqual( transition.state_transition(s, self.network, method="sync", nodes='b') , sol )
+    #         self.assertEqual( transition.state_transition(s, self.network, update="sync", nodes='b') , sol )
 
 
 
@@ -48,14 +54,14 @@ class TestSequenceFunctions(unittest.TestCase):
     #     #supose order: a, b, c
     #     sol_all_async = [[0,0,0], [0,0,1], [0,0,0], [0,0,1], [1,1,0], [1,0,1], [1,1,0], [1,0,1] ]
     #     for s, sol in zip(self.states, sol_all_async):
-    #         self.assertEqual( transition.state_transition(s, self.network, method="async", nodes='all') , sol )
+    #         self.assertEqual( transition.state_transition(s, self.network, update="async", nodes='all') , sol )
 
 
     # def test_lambda_bool_list_async(self):
     #     #supose order: c, b
     #     sol_list_async = [[0,0,0], [0,0,1], [0,0,0], [0,0,0], [1,1,0], [1,0,1], [1,1,0], [1,1,0] ]
     #     for s, sol in zip(self.states, sol_list_async):
-    #         self.assertEqual( transition.state_transition(s, self.network, method="async", nodes=['c', 'b']) , sol )
+    #         self.assertEqual( transition.state_transition(s, self.network, update="async", nodes=['c', 'b']) , sol )
 
 
     # def test_lambda_bool_node_async(self):
@@ -63,11 +69,11 @@ class TestSequenceFunctions(unittest.TestCase):
     #     sol_b_async = [[0,0,0], [0,0,1], [0,0,0], [0,0,1], [1,1,0], [1,0,1], [1,1,0], [1,0,1] ]
     #     sol_c_async = [[0,0,0], [0,0,1], [0,1,0], [0,1,0], [1,0,0], [1,0,1], [1,1,0], [1,1,0] ]
     #     for s, sol in zip(self.states, sol_a_async):
-    #         self.assertEqual( transition.state_transition(s, self.network, method="async", nodes='a') , sol )
+    #         self.assertEqual( transition.state_transition(s, self.network, update="async", nodes='a') , sol )
     #     for s, sol in zip(self.states, sol_b_async):
-    #         self.assertEqual( transition.state_transition(s, self.network, method="async", nodes='b') , sol )
+    #         self.assertEqual( transition.state_transition(s, self.network, update="async", nodes='b') , sol )
     #     for s, sol in zip(self.states, sol_c_async):
-    #         self.assertEqual( transition.state_transition(s, self.network, method="async", nodes='c') , sol )
+    #         self.assertEqual( transition.state_transition(s, self.network, update="async", nodes='c') , sol )
 
 
 
@@ -89,19 +95,50 @@ class TestSequenceFunctions(unittest.TestCase):
 
 
 
-    def test_get_transition_graph_sync(self):
-        transitions = [ ("000","000"), ("001","001"), ("010","000"), ("011","000"), ("100","110"), ("101","101"), ("110","110"), ("111","100") ]
-        self.assertEqual(sorted(transition.get_transition_graph(self.network, "sync", "all").edges() ),  transitions  )
-        for e in transition.get_transition_graph(self.network, "sync", 3).edges(): self.assertIn(e, transitions)
-        for e in transition.get_transition_graph(self.network, "sync", [[0,0,0], [0,1,1]]).edges(): self.assertIn(e, transitions)
+    # def test_get_transition_graph_sync(self):
+    #     trans = [ ("000","000"), ("001","001"), ("010","000"), ("011","000"), ("100","110"), ("101","101"), ("110","110"), ("111","100") ]
+    #     self.assertEqual(sorted(transition.get_transition_graph(self.network, "sync", "all").edges() ),  trans  )
+    #     for e in transition.get_transition_graph(self.network, "sync", 3).edges(): self.assertIn(e, trans)
+    #     for e in transition.get_transition_graph(self.network, "sync", [[0,0,0], [0,1,1]]).edges(): self.assertIn(e, trans)
+
+    # def test_get_transition_graph_sync_cycle(self):
+    #     trans = [ ('000', '000'), ('001', '000'), ('010', '101'), ('011', '101'), ('100', '010'), ('101', '000'), ('110', '111'), ('111', '101') ]
+    #     self.assertEqual(sorted(transition.get_transition_graph(self.net_cycle, "sync", "all").edges() ),  trans  )
+    #     for e in transition.get_transition_graph(self.net_cycle, "sync", 3).edges(): self.assertIn(e, trans)
+    #     for e in transition.get_transition_graph(self.net_cycle, "sync", [[0,0,0], [0,1,1]]).edges(): self.assertIn(e, trans)
 
 
         
-    def test_get_transition_graph_async(self):
-        transitions = [ ("000","000"), ("001","001"), ("010","000"), ("011","001"), ('011', '010'),  ("100","110"), ("101","101"), ("110","110"), ("111","101"), ("111","110") ]
-        self.assertEqual( transitions,  sorted(transition.get_transition_graph(self.network, "async", "all").edges() )  )
-        for e in transition.get_transition_graph(self.network, "async", 3).edges(): self.assertIn(e, transitions)
-        for e in transition.get_transition_graph(self.network, "async", [[0,0,0], [0,1,1]]).edges(): self.assertIn(e, transitions)        
+        
+    # def test_get_transition_graph_async(self):
+        # trans = [ ("000","000"), ("001","001"), ("010","000"), ("011","001"), ('011', '010'),  ("100","110"), ("101","101"), ("110","110"), ("111","101"), ("111","110") ]
+        # self.assertEqual( trans,  sorted(transition.get_transition_graph(self.network, "async", "all").edges() )  )
+        # for e in transition.get_transition_graph(self.network, "async", 3).edges(): self.assertIn(e, trans)
+        # for e in transition.get_transition_graph(self.network, "async", [[0,0,0], [0,1,1]]).edges(): self.assertIn(e, trans)        
+
+    def test_get_transition_graph_async_cycle(self):
+        trans = [ ("000", "000"), ("001", "000"), ("010", "000"), ("010", "011"), ("010", "110"), ("011", "001"), ("011", "111"), ("100", "000"), ("100", "110"), ("101", "001"), ("101", "100"), ("110", "111"), ("111", "101") ]
+        self.assertEqual( trans,  sorted(transition.get_transition_graph(self.net_cycle, "async", "all").edges() )  )
+        for e in transition.get_transition_graph(self.net_cycle, "async", 3).edges(): self.assertIn(e, trans)
+        for e in transition.get_transition_graph(self.net_cycle, "async", [[0,0,0], [0,1,1]]).edges(): self.assertIn(e, trans)  
+
+
+
+
+    # def test_get_attractors_sync(self):
+    #     attr = ["000", "001", "101", "110"]
+    #     # self.assertEqual( attr,  sorted(transition.get_attractors(self.network, "sync", "all"))  )
+    #     transition.get_attractors(self.net_cycle, "graph", "sync", "all")
+    #     transition.get_attractors(self.net_cycle, "graph", "async", "all")
+
+
+    # def test_get_attractors_async(self):
+        # attr = ["000", "001", "101", "110"]
+        # self.assertEqual( attr,  sorted(transition.get_attractors(self.network, "async", "all"))  )
+
+
+
+
 
 if __name__ == '__main__':
     unittest.main()
