@@ -1,4 +1,5 @@
 from random import shuffle, choice, randint
+import networkx as nx
 
 from regnet import RegNet
 from node import Node
@@ -121,22 +122,25 @@ def get_transition_graph(network, method="sync", states="all", G=None):
     if states == "all": #generator of all possible states
         states = generate_all_base_array_states(len(network), network.f_base)
     elif type(states) == int: #generator random states
-        state = generate_random_base_array_states(states, len(network), network.f_base)
-    # elif type(states) == list: #use user defined states
-    #     pass #just checking
+        states = generate_random_base_array_states(states, len(network), network.f_base)
+    elif type(states) == list: #use user defined states
+        pass #just checking
     else: raise TypeError("Incorrect states option.")
 
     #Evaluate states
     for s in states:
-        print s
         if method == "sync":
             new = state_transition(s, network, "sync", "all")
-            G.add_edge(s, new) #save to graph
+            G.add_edge( array_to_str(s), array_to_str(new) )  #save str to graph
         if method == "async":
+            news = {}
+            s_str = array_to_str(s)
             for n in network: #evaluate each node
-                new = state_transition(s, network, "async", n.name)
-                G.add_edge(s, new) #save to graph
-
+                new = array_to_str( state_transition(s, network, "async", n.name) )
+                if new in news: news[new] += 1
+                else: news[new] = 1
+            if news[s_str] != len(network): del news[s_str] # remove false self-loops
+            for n in news: G.add_edge( s_str, array_to_str(n), weight=news[n] )  #save str to graph
     return G
 
 
@@ -238,3 +242,9 @@ def bin_array_to_dec(s):
     """Convert binary array to decimal."""
     dec = int(''.join([str(i) for i in s]), 2)
     return dec
+
+def array_to_str(a):
+    return ''.join([str(int(i)) for i in a] )
+
+def str_to_array(s):
+    return [i for i in s]
