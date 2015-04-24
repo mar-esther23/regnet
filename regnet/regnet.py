@@ -31,6 +31,7 @@ class RegNet(object):
         ---------
         data :          data to initialize network.  If data=None (default) an empty network is generated.  
         f_type (str):   type of function in the graph
+        f_base (int, list): number of values the nodes can take, if bool = 2.
         threshold (int, optional), threshold to evaluate network
         adj_matrix (numpy matrix, optional): adjacency matrix
         verbose (Bool, optional)
@@ -38,6 +39,7 @@ class RegNet(object):
         
         #The main structure is a networkx directed graph        
         self.f_type = f_type #type of function of the network
+        self.f_base = f_base
         self.graph = nx.DiGraph() #networkx graph (dictionary)
         self.nodes = [] #list of node objects, nodes have a name, index and function
         self.verbose = verbose
@@ -135,7 +137,7 @@ class RegNet(object):
         for line in data:
             name = line.strip().split('=')[0].strip() #name string
             funct = line.strip().split('=')[1].strip() #function string
-            regul = funct.replace(' and ', ' ').replace(' or ',' ').replace( ' not ',' ').split() #regulators list of strings
+            regul = funct.replace('and', '').replace('or','').replace( 'not','').split() #regulators list of strings
             nodes_list.append([name, funct, regul])
         nodes_names = [n[0] for n in nodes_list]
         
@@ -154,7 +156,7 @@ class RegNet(object):
             #generate lambda function
             node_lambda = eval("lambda (" + ','.join(nodes_names) + ') : ' + node[1]) 
             #declare node
-            nodes.append(   Node(node[0], self.f_type, index, node_lambda, node[1], node[2])   )
+            nodes.append(   Node(node[0], self.f_type, self.f_base, index, node_lambda, node[1], node[2])   )
         
         for n in nodes:
             for i in input_nodes:
@@ -199,7 +201,7 @@ class RegNet(object):
             #determine regulators
             regulators = [x for x,y in zip(names, matrix[i]) if y != 0]
             #declare node
-            nodes.append(   Node(names[i], self.f_type, i, node_lambda,
+            nodes.append(   Node(names[i], self.f_type, self.f_base, i, node_lambda,
                 node_str_function, regulators))
 
         return nodes
@@ -255,7 +257,7 @@ class RegNet(object):
             position = [node[1][i] + '*2**' + str(len(node[1])-i-1) for i in range(len(node[1]))]
             node_lambda = eval(   "lambda (" +','.join(nodes_names) +") : " +str(node[2]) +'[' +'+'.join(position) +']'   )
             #declare node
-            nodes.append(   Node(node[0], self.f_type, index, node_lambda, node_str_function, node[1])   )
+            nodes.append(   Node(node[0], self.f_type, self.f_base, index, node_lambda, node_str_function, node[1])   )
 
         return nodes
 

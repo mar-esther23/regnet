@@ -13,9 +13,10 @@ class TestSequenceFunctions(unittest.TestCase):
             b = a and not c
             c = c and not b
             """
-        network = RegNet(text_functions, "lambda_bool", verbose=False)
+        network = RegNet(text_functions, "lambda_bool", 2, verbose=False)
 
         self.assertEqual("lambda_bool", network.f_type)
+        self.assertEqual(2, network.f_base)
         self.assertIn("a", network)
         self.assertIn("b", network)
         self.assertIn("c", network)
@@ -29,7 +30,7 @@ class TestSequenceFunctions(unittest.TestCase):
             b = a and not c
             c = c and not b
             """
-        network = RegNet(text_functions, "lambda_bool", verbose=False)
+        network = RegNet(text_functions, f_type="lambda_bool", verbose=False)
 
         edges = [ ('a','a'), ('a','b'), ('c','b'), ('c','c'), ('b','c') ]
         for e in edges:
@@ -41,7 +42,7 @@ class TestSequenceFunctions(unittest.TestCase):
             b = a and not c
             c = c and not b
             """
-        network = RegNet(text_functions, "lambda_bool", verbose=False)
+        network = RegNet(text_functions, f_type="lambda_bool", f_base=2, verbose=False)
 
         self.assertEqual(network['a'].input, True)
         self.assertEqual(network['b'].input, False)

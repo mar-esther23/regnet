@@ -3,6 +3,7 @@ import networkx as nx
 
 from regnet import RegNet
 from node import Node
+from attractor import Attractor
 
 
 def state_transition(state, net, update="sync", nodes="all"):
@@ -177,10 +178,10 @@ def get_attractors(network, method="graph", update="sync", states="all", graph=N
                 print "Received graph and get_attractors() have different arguments."
         else: graph = get_transition_graph(network, update, states) #create new graph
 
-        if graph.graph['update'] == "sync": #return all cycles ordered with attr basin
-            # print network
-            # print sorted( graph.edges() )
-            # print list( nx.simple_cycles(graph) )
+        if graph.graph['update'] == "sync": #return all attr ordered with attr basin
+            for attr in sorted( nx.simple_cycles(graph) ): 
+                print attr
+                Attractor(network.f_type, attr, label="")
             pass
 
         if graph.graph['update'] == "async": #return all closed cycles ordered with attr basin

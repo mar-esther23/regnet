@@ -16,14 +16,15 @@ class Attractor(object):
     label (str, optional): label of the attractor
     """
 
-    def __init__(self, f_type, attr, label=""):
+    def __init__(self, attr, f_type="lambda_bool", f_base=2, label=""):
         """
         An attractor is a solution of the network such that state(t) = state(t+n).
 
         Arguments
         ---------
-        f_type (str):   function type of the network
         attr (list of lists):  states that constitute the attractor
+        f_type (str):   function type of the network
+        f_base (int): 
         label (str, optional): label of the attractor
         """
 

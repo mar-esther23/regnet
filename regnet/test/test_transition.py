@@ -16,12 +16,11 @@ class TestSequenceFunctions(unittest.TestCase):
             c = c and not b
             """
         self.network = RegNet(text_functions, "lambda_bool", verbose=False)
-        cycle_functions = """
-            a = b
-            b = a and not c
-            c = b
+        cycle_short = """
+            a = not b
+            b = not a
             """
-        self.net_cycle = RegNet(cycle_functions, "lambda_bool", verbose=False)
+        self.net_cycle = RegNet(cycle_short, "lambda_bool", verbose=False)
         self.states = [[int(i) for i in bin(j)[2:].zfill(3)] for j in range(8)]
         
 
@@ -102,10 +101,10 @@ class TestSequenceFunctions(unittest.TestCase):
     #     for e in transition.get_transition_graph(self.network, "sync", [[0,0,0], [0,1,1]]).edges(): self.assertIn(e, trans)
 
     # def test_get_transition_graph_sync_cycle(self):
-    #     trans = [ ('000', '000'), ('001', '000'), ('010', '101'), ('011', '101'), ('100', '010'), ('101', '000'), ('110', '111'), ('111', '101') ]
+    #     trans = [ ("00", "11"), ("01", "01"), ("10", "10"), ("11", "00") ]
     #     self.assertEqual(sorted(transition.get_transition_graph(self.net_cycle, "sync", "all").edges() ),  trans  )
     #     for e in transition.get_transition_graph(self.net_cycle, "sync", 3).edges(): self.assertIn(e, trans)
-    #     for e in transition.get_transition_graph(self.net_cycle, "sync", [[0,0,0], [0,1,1]]).edges(): self.assertIn(e, trans)
+    #     for e in transition.get_transition_graph(self.net_cycle, "sync", [[0,0], [0,1]]).edges(): self.assertIn(e, trans)
 
 
         
@@ -116,25 +115,28 @@ class TestSequenceFunctions(unittest.TestCase):
         # for e in transition.get_transition_graph(self.network, "async", 3).edges(): self.assertIn(e, trans)
         # for e in transition.get_transition_graph(self.network, "async", [[0,0,0], [0,1,1]]).edges(): self.assertIn(e, trans)        
 
-    def test_get_transition_graph_async_cycle(self):
-        trans = [ ("000", "000"), ("001", "000"), ("010", "000"), ("010", "011"), ("010", "110"), ("011", "001"), ("011", "111"), ("100", "000"), ("100", "110"), ("101", "001"), ("101", "100"), ("110", "111"), ("111", "101") ]
-        self.assertEqual( trans,  sorted(transition.get_transition_graph(self.net_cycle, "async", "all").edges() )  )
-        for e in transition.get_transition_graph(self.net_cycle, "async", 3).edges(): self.assertIn(e, trans)
-        for e in transition.get_transition_graph(self.net_cycle, "async", [[0,0,0], [0,1,1]]).edges(): self.assertIn(e, trans)  
+    # def test_get_transition_graph_async_cycle(self):
+    #     trans = [ ("00", "01"), ("00", "10"), ("01", "01"), ("10", "10"), ("11", "01"), ("11", "10") ]
+    #     self.assertEqual( trans,  sorted(transition.get_transition_graph(self.net_cycle, "async", "all").edges() )  )
+    #     for e in transition.get_transition_graph(self.net_cycle, "async", 3).edges(): self.assertIn(e, trans)
+    #     for e in transition.get_transition_graph(self.net_cycle, "async", [[0,0], [0,1]]).edges(): self.assertIn(e, trans)  
 
 
 
 
-    # def test_get_attractors_sync(self):
-    #     attr = ["000", "001", "101", "110"]
-    #     # self.assertEqual( attr,  sorted(transition.get_attractors(self.network, "sync", "all"))  )
-    #     transition.get_attractors(self.net_cycle, "graph", "sync", "all")
-    #     transition.get_attractors(self.net_cycle, "graph", "async", "all")
+    def test_get_attractors_sync(self):
+        attr = ["000", "001", "101", "110"]
+        print transition.get_attractors(self.network, method="graph", update="sync", states="all")
+
+        print transition.get_attractors(self.net_cycle, method="graph", update="sync", states="all")
+        # self.assertEqual( attr,  sorted(transition.get_attractors(self.network, "sync", "all"))  )
+        pass
 
 
-    # def test_get_attractors_async(self):
+    def test_get_attractors_async(self):
         # attr = ["000", "001", "101", "110"]
         # self.assertEqual( attr,  sorted(transition.get_attractors(self.network, "async", "all"))  )
+        pass
 
 
 
