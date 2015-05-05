@@ -131,6 +131,7 @@ class TestSequenceFunctions(unittest.TestCase):
         print transition.get_attractors(self.net_cycle, method="graph", update="sync", states="all")
         # self.assertEqual( attr,  sorted(transition.get_attractors(self.network, "sync", "all"))  )
         pass
+        
 
 
     def test_get_attractors_async(self):

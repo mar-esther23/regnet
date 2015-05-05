@@ -180,8 +180,7 @@ def get_attractors(network, method="graph", update="sync", states="all", graph=N
 
         if graph.graph['update'] == "sync": #return all attr ordered with attr basin
             for attr in sorted( nx.simple_cycles(graph) ): 
-                print attr
-                Attractor(network.f_type, attr, label="")
+                print Attractor(attr, network.f_type, network.f_base)
             pass
 
         if graph.graph['update'] == "async": #return all closed cycles ordered with attr basin

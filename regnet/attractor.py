@@ -16,7 +16,7 @@ class Attractor(object):
     label (str, optional): label of the attractor
     """
 
-    def __init__(self, attr, f_type="lambda_bool", f_base=2, label=""):
+    def __init__(self, attr, f_type="lambda_bool", f_base=2, node_names=[], basin=None, label=""):
         """
         An attractor is a solution of the network such that state(t) = state(t+n).
 
@@ -24,12 +24,17 @@ class Attractor(object):
         ---------
         attr (list of lists):  states that constitute the attractor
         f_type (str):   function type of the network
-        f_base (int): 
+        f_base (int):   number of values the nodes can take, if bool = 2.
+        node_names (list of str): names of nodes in attractor.
+        basin (int, optional):    number of states that end in the attractor.
         label (str, optional): label of the attractor
         """
 
-        self.f_type = f_type #type of function of the network
         self.attr = attr
+        self.f_type = f_type #type of function of the network
+        self.f_base = f_base
+        self.node_names = node_names
+        self.basin = basin
         self.label = label
         
 
@@ -38,37 +43,30 @@ class Attractor(object):
 
 
 
-    # def __str__(self): 
-    #     """
-    #     Print network type and nodes (with rules)
-    #     """
-    #     text = self.f_type + ":\n"
-    #     for node in self.nodes:
-    #         text += str(node) + '\n'
-    #     return text.strip()
+    def __str__(self): 
+        """
+        Print attractor length, states and basin.
+        """
+        text = "Attractor " + self.label  + "\n"
+        text += "\tLength: "+ str(len(self.attr)) + "\n"
+        text += "\tBasin: "+ str(self.basin) + "\n"
+        text += "\tWith nodes: "+ ', '.join(self.node_names) + "\n" 
+        text += "\tWith states: "
+        for a in self.attr: text += " -> " + a
+        return text.strip()
 
 
-    # def __len__(self):
-    #     """Return the number of nodes. Use the expression 'len(G)'."""
-    #     return len(self.nodes)
+    def __len__(self):
+        """Return the number of states in attractor. Use the expression 'len(attr)'."""
+        return len(self.attr)
 
 
-    # def __iter__(self): 
-    #     """Iterate over the nodes. Use the expression 'for n in G'."""
-    #     return iter(self.nodes)
+    def __iter__(self): 
+        """Iterate over the states of attractor. Use the expression 'for n in attr'."""
+        return iter(self.attr)
 
-    # def __contains__(self,n):
-    #     """Return True if n is a node name, False otherwise. Use the expression 'n in G'."""
-    #     for node in self.nodes:
-    #         if node.name == n: return True
-    #     return False
-
-    # def __getitem__(self, n):
-    #     """Return node with name n.  Use the expression 'G[n]'."""
-    #     for node in self.nodes:
-    #         if node.name == n: return node
-    #     return False
-
-    # def node_list(self):
-    #     """Return a list of the nodes in the graph."""
-    #     return [n.name for n in self.nodes]
+    def __contains__(self,n):
+        """Return True if n is a state in the attractor, False otherwise. Use the expression 'n in attr'."""
+        for a in self.attr:
+            if a == n: return True
+        return False
