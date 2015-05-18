@@ -16,7 +16,6 @@ class RegNet(object):
         "matrix_bool": interaction matrix, multiply state per node vector, evaluate by threshold, returns 0 or 1
         "table_bool":  transition table, search state of neighbors in table, returns 0 or 1
         "lambda_discrete": lambda discrete function, evaluate state in function, returns a positive integer
-    f_base (int, list):         number of values the nodes can take, if boolean it is 2. If discrete it is max_value + 1. If the nodes have different values the list determines the max value of each node.
     nodes (list of Node(s)):    node objects, nodes have a name, index and function
     graph (networkx DiGraph):   networkx directed graph, edges are defined by which nodes regulate the value of a certain node
     threshold (int, optional): threshold to evaluate network
@@ -24,14 +23,13 @@ class RegNet(object):
     verbose (Bool, optional)
     """
 
-    def __init__(self,data,f_type="lambda_bool", f_base=2, threshold=1, verbose=True):
+    def __init__(self,data,f_type="lambda_bool", threshold=1, verbose=True):
         """Initialize a node. A node must have a name, index, function type, and a function; regulators and attributes are optional.
 
         Arguments
         ---------
         data :          data to initialize network.  If data=None (default) an empty network is generated.  
         f_type (str):   type of function in the graph
-        f_base (int, list): number of values the nodes can take, if bool = 2.
         threshold (int, optional), threshold to evaluate network
         adj_matrix (numpy matrix, optional): adjacency matrix
         verbose (Bool, optional)
@@ -39,12 +37,9 @@ class RegNet(object):
         
         #The main structure is a networkx directed graph        
         self.f_type = f_type #type of function of the network
-        self.f_base = f_base
         self.graph = nx.DiGraph() #networkx graph (dictionary)
         self.nodes = [] #list of node objects, nodes have a name, index and function
         self.verbose = verbose
-        if f_base != 2: raise NotImplementedError
-        else: self.f_base = f_base
     
         if self.f_type == "lambda_bool": 
             #data: multiline string with boolean functions
@@ -101,7 +96,7 @@ class RegNet(object):
         return False
 
     def node_list(self):
-        """Return a list of the nodes in the graph."""
+        """Return an ordered list of the nodes in the graph."""
         return [n.name for n in self.nodes]
 
 
@@ -156,7 +151,7 @@ class RegNet(object):
             #generate lambda function
             node_lambda = eval("lambda (" + ','.join(nodes_names) + ') : ' + node[1]) 
             #declare node
-            nodes.append(   Node(node[0], self.f_type, self.f_base, index, node_lambda, node[1], node[2])   )
+            nodes.append(   Node(node[0], self.f_type, index, node_lambda, node[1], node[2])   )
         
         for n in nodes:
             for i in input_nodes:
@@ -201,7 +196,7 @@ class RegNet(object):
             #determine regulators
             regulators = [x for x,y in zip(names, matrix[i]) if y != 0]
             #declare node
-            nodes.append(   Node(names[i], self.f_type, self.f_base, i, node_lambda,
+            nodes.append(   Node(names[i], self.f_type, i, node_lambda,
                 node_str_function, regulators))
 
         return nodes
@@ -257,7 +252,7 @@ class RegNet(object):
             position = [node[1][i] + '*2**' + str(len(node[1])-i-1) for i in range(len(node[1]))]
             node_lambda = eval(   "lambda (" +','.join(nodes_names) +") : " +str(node[2]) +'[' +'+'.join(position) +']'   )
             #declare node
-            nodes.append(   Node(node[0], self.f_type, self.f_base, index, node_lambda, node_str_function, node[1])   )
+            nodes.append(   Node(node[0], self.f_type, index, node_lambda, node_str_function, node[1])   )
 
         return nodes
 
@@ -275,8 +270,8 @@ class RegNet(object):
         """
         G = nx.DiGraph()
         for n in nodes:
-        	for r in n.regulators:
-        		G.add_edge(r, n.name)
+            for r in n.regulators:
+                G.add_edge(r, n.name)
         return G
 
     def interaction_matrix_to_digraph(self, names, adyacency):

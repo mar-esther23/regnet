@@ -12,19 +12,17 @@ class TestSequenceFunctions(unittest.TestCase):
     	#inputs
         name = "c"
         f_type = "lambda_bool"
-        f_base = 2
         index = 0
         function = lambda b , c : c and not b
         str_function = "c = c and not b"
         regulators = ["b", "c"]
 
         #declare node
-        node = Node(name, f_type, f_base, index, function, str_function, regulators)
+        node = Node(name, f_type, index, function, str_function, regulators)
 
         # inputs == node
         self.assertEqual( node.name, name )
         self.assertEqual( node.f_type, f_type )
-        self.assertEqual( node.f_base, f_base )
         self.assertEqual( node.index, index )
         self.assertEqual( node.function, function )
         self.assertEqual( node.str_function, str_function )
@@ -33,14 +31,13 @@ class TestSequenceFunctions(unittest.TestCase):
     def test_node_fix_value(self):
         name = "c"
         f_type = "lambda_bool"
-        f_base = 2
         index = 0
         function = lambda b , c : c and not b
         str_function = "c = c and not b"
         regulators = ["b", "c"]
 
         #declare node
-        node = Node(name, f_type, f_base, index, function, str_function, regulators)
+        node = Node(name, f_type, index, function, str_function, regulators)
 
         #fix value
         value = 2

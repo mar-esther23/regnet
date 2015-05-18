@@ -8,7 +8,6 @@ class Node(object):
     ----------
     name (str):     name of node
     f_type (str):   function type
-    f_base (int):   number of values the nodes can take, if bool = 2.
     index (str):    index of nodes
     function (lambda):  lambda function that updates the state of the node
     str_function (str): function readable display
@@ -17,7 +16,7 @@ class Node(object):
     fixed (Bool):       is the value of the node fixed?
     """
 
-    def __init__(self, name, f_type, f_base, index, function, str_function, regulators=None, input_node=False, fixed=False):
+    def __init__(self, name, f_type, index, function, str_function, regulators=None, input_node=False, fixed=False):
         """
         A node must have a name, index, function type, and a function; regulators and attributes are optional.
 
@@ -25,7 +24,6 @@ class Node(object):
         ----------
         name (str):     name of the node
         f_type (str):   function type of node
-        f_base (int):   number of values the nodes can take, if bool = 2.
         index (int):    index of the node in the graph
             Used to determine position in state vector
         function (lambda):  function that regulates the state of the node
@@ -38,7 +36,6 @@ class Node(object):
 
         self.name = name #name of node str
         self.f_type = f_type #function type, can be:
-        self.f_base = f_base
         self.index = index  #index of position in regnet.nodes
 
         self.function = function #lambda function that updates the state of the node

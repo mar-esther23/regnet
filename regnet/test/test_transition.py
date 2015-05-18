@@ -110,10 +110,10 @@ class TestSequenceFunctions(unittest.TestCase):
         
         
     # def test_get_transition_graph_async(self):
-        # trans = [ ("000","000"), ("001","001"), ("010","000"), ("011","001"), ('011', '010'),  ("100","110"), ("101","101"), ("110","110"), ("111","101"), ("111","110") ]
-        # self.assertEqual( trans,  sorted(transition.get_transition_graph(self.network, "async", "all").edges() )  )
-        # for e in transition.get_transition_graph(self.network, "async", 3).edges(): self.assertIn(e, trans)
-        # for e in transition.get_transition_graph(self.network, "async", [[0,0,0], [0,1,1]]).edges(): self.assertIn(e, trans)        
+    #     trans = [ ("000","000"), ("001","001"), ("010","000"), ("011","001"), ('011', '010'),  ("100","110"), ("101","101"), ("110","110"), ("111","101"), ("111","110") ]
+    #     self.assertEqual( trans,  sorted(transition.get_transition_graph(self.network, "async", "all").edges() )  )
+    #     for e in transition.get_transition_graph(self.network, "async", 3).edges(): self.assertIn(e, trans)
+    #     for e in transition.get_transition_graph(self.network, "async", [[0,0,0], [0,1,1]]).edges(): self.assertIn(e, trans)        
 
     # def test_get_transition_graph_async_cycle(self):
     #     trans = [ ("00", "01"), ("00", "10"), ("01", "01"), ("10", "10"), ("11", "01"), ("11", "10") ]
@@ -124,22 +124,49 @@ class TestSequenceFunctions(unittest.TestCase):
 
 
 
-    def test_get_attractors_sync(self):
-        attr = ["000", "001", "101", "110"]
-        print transition.get_attractors(self.network, method="graph", update="sync", states="all")
+    # def test_get_attractors_sync(self):
+    #     attr = ["000", "001", "101", "110"]
+    #     print transition.get_attractors(self.network, method="graph", update="sync", states="all")
 
-        print transition.get_attractors(self.net_cycle, method="graph", update="sync", states="all")
-        # self.assertEqual( attr,  sorted(transition.get_attractors(self.network, "sync", "all"))  )
-        pass
+    #     print transition.get_attractors(self.net_cycle, method="graph", update="sync", states="all")
+    #     # self.assertEqual( attr,  sorted(transition.get_attractors(self.network, "sync", "all"))  )
+    #     pass
         
 
 
-    def test_get_attractors_async(self):
-        # attr = ["000", "001", "101", "110"]
-        # self.assertEqual( attr,  sorted(transition.get_attractors(self.network, "async", "all"))  )
-        pass
+    # def test_get_attractors_async(self):
+    #     # attr = ["000", "001", "101", "110"]
+    #     # self.assertEqual( attr,  sorted(transition.get_attractors(self.network, "async", "all"))  )
+    #     pass
 
 
+    def test_base_converters(self):
+        self.assertEqual( transition.dec_to_base_array(6,5), [0,0,1,1,0] )
+        self.assertEqual( transition.dec_to_base_array(6,5,3), [0,0,0,2,0])
+        self.assertEqual( transition.base_array_to_dec([0,0,1,1,0]), 6)
+        self.assertEqual( transition.base_array_to_dec([0,0,0,2,0],3), 6)
+
+        self.assertEqual( transition.dec_to_bin_array(6, 5), [0,0,1,1,0] )
+        self.assertEqual( transition.bin_array_to_dec([0,0,1,1,0]), 6 )
+
+        self.assertEqual( transition.state_to_str([0,11,1,3,0]), '0B130' )
+        self.assertEqual( transition.str_to_state('0B130'), [0,11,1,3,0] )
+
+    def test_generators(self):
+        for i, j in zip(self.states, transition.generate_all_base_array_states(3)):
+            self.assertEqual(  i, j )
+        for j in transition.generate_random_base_array_states(5, 3):
+            self.assertIn(j, self.states)
+
+    def test_verify_states(self):
+        self.assertEqual( transition.validate_state([1,1,0], 3), True )
+        self.assertEqual( transition.validate_state((1,1,0), 3), True )
+        self.assertEqual( transition.validate_state([1,3,0], 3), False )
+
+        self.assertEqual( transition.return_valid_states( ['11010', (0,1,0,0,0)], 5)    ,   [[1,1,0,1,0], [0,1,0,0,0]] )
+        self.assertEqual( transition.return_valid_states( [0,1,0,0,0], 5)    ,   [[0,1,0,0,0]] )
+        with self.assertRaises(TypeError): transition.return_valid_states( [0,3], 2)
+        with self.assertRaises(TypeError): transition.return_valid_states( ['011'], 2)
 
 
 

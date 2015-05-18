@@ -16,28 +16,29 @@ class Attractor(object):
     label (str, optional): label of the attractor
     """
 
-    def __init__(self, attr, f_type="lambda_bool", f_base=2, node_names=[], basin=None, label=""):
+    def __init__(self, states, f_type, node_names, basin=None, label="", graph=None):
         """
         An attractor is a solution of the network such that state(t) = state(t+n).
 
         Arguments
         ---------
-        attr (list of lists):  states that constitute the attractor
-        f_type (str):   function type of the network
-        f_base (int):   number of values the nodes can take, if bool = 2.
-        node_names (list of str): names of nodes in attractor.
-        basin (int, optional):    number of states that end in the attractor.
-        label (str, optional): label of the attractor
+        states (list of lists):       states that constitute the attractor
+        f_type (str):               function type of the network
+        node_names (list of str):   names of nodes in attractor.
+        basin (int, optional):      number of states that end in the attractor.
+        label (str, optional):      label of the attractor
+        graph (DiGraph, optional):  transition graph of states that end in attractor.
         """
 
-        self.attr = attr
-        self.f_type = f_type #type of function of the network
-        self.f_base = f_base
+        
+        self.f_type = f_type
         self.node_names = node_names
         self.basin = basin
         self.label = label
-        
+        self.graph = graph
 
+        #check states and order them
+        #states are saved as strings
 
 
 
